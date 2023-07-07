@@ -1,0 +1,61 @@
+version: "3"
+
+
+services:
+
+  synttp-main:
+    image: synttp:latest
+    build:
+      context: ./ttp
+      dockerfile: Dockerfile
+      shm_size: "2gb"               # modify according to your hardware
+    entrypoint: ["ray", "start"]
+    command: [
+      "--head",
+      "--node-ip-address", "synttp-main", 
+      "--port", "8379",
+      "--redis-shard-ports", "8380,8381",
+      "--ray-client-server-port", "30001",
+      "--include-dashboard", "True",
+      "--dashboard-host", "0.0.0.0",
+      "--dashboard-port", "10265",
+      "--node-manager-port", "40000",
+      "--object-manager-port", "40001",
+      "--block"
+    ]
+    ports:
+      - 8379:8379
+      - 10265:10265
+      - 30001:30001
+    volumes:
+      - /dev/shm:/dev/shm         
+    networks:
+      ttpnet:
+        ipv4_address: 172.20.0.2
+
+  synttp-addon:
+    image: synttp:latest
+    build:
+      context: ./ttp
+      dockerfile: Dockerfile
+    entrypoint: ["ray", "start"]
+    command: [
+      "--address", "synttp-main:8379",
+      "--node-ip-address", "synttp-addon",
+      "--block"
+    ]
+    volumes:
+      - /dev/shm:/dev/shm     
+    depends_on:
+      - synttp-main              # Head node must be available to connect
+    networks:
+      ttpnet:
+        ipv4_address: 172.20.0.3
+
+
+networks:
+  ttpnet:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/24"

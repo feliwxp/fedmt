@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+
+  synworker-main:
+    image: synworker:latest
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+      shm_size: "2gb" # modify according to your hardware
+    environment:
+      - RAY_BACKEND_LOG_LEVEL=debug
+    entrypoint: [ "ray", "start" ]
+    command:
+      [
+        "--head",
+        "--node-ip-address",
+        "synworker-main",
+        "--port",
+        "6379",
+        "--redis-shard-ports",
+        "6380,6381",
+        "--ray-client-server-port",
+        "10001",
+        "--include-dashboard",
+        "True",
+        "--dashboard-host",
+        "0.0.0.0",
+        "--dashboard-port",
+        "8265",
+        "--node-manager-port",
+        "20000",
+        "--object-manager-port",
+        "20001",
+        "--block"
+      ]
+    ports:
+      - 6379:6379
+      - 8265:8265
+      - 10001:10001
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      workernet-1:
+        ipv4_address: 172.18.0.2
+
+  synworker-addon:
+    image: synworker:latest
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    environment:
+      - RAY_BACKEND_LOG_LEVEL=debug
+    entrypoint: [ "ray", "start" ]
+    command:
+      [
+        "--address",
+        "synworker-main:6379",
+        "--node-ip-address",
+        "synworker-addon",
+        "--block"
+      ]
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - synworker-main # Head node must be available to connect
+    networks:
+      workernet-1:
+        ipv4_address: 172.18.0.3
+
+networks:
+  workernet-1:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.18.0.0/24"
