@@ -1,23 +1,3 @@
-# Federated Prototypes
-
-Main repo hosting federated prototypes for Synergos
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Installation
-
-```
-# Download source repository
-git clone https://gitlab.aisingapore.net/aims/federatedlearning/100e-bricks/federated-prototypes
-```
-
 ## Usage
 ```
 # Start 2 worker Clusters, each comprising of 1 head Ray node and 1 worker Ray node 
@@ -33,39 +13,25 @@ docker-compose \
     down
 ```
 
-## Roadmap
+## Fedmt 
 
-1. Cryptographic Masking
+![objective](images/objective.png)
 
-2. Ambiguity Injection
+Federated multitask learning is to solve different similar tasks at the same time in a federated setting, where each device has its own task/objective. This algorithm aims to optimise multiple objectives at the same time. 
 
-3. Algorithmic Optimizations
-    - Orchestration
-        - [ ] FedCS
-        - [ ] FedDropout
-        - [ ] FedQuant
-        - [ ] FedStar
+By exploiting the similarities and differences across different tasks. For example, for 2 models with the same input of a image of a flower, 1 model identifies the flower type and another identifies the flower color. 
 
-    - Statistical
-        - [ ] FedD
-        - [ ] FedGNN
-        - [ ] FedMT
-        - [ ] FedProg
-        - [ ] FedSem
-        - [ ] FedSplit
+The multi-task learning objective here in FL is to minimise the loss of local models. Here, in order to incorporate global information, the objective uses an L2 regularizer to enforce local models to be closer to the optimal global model. Λ (lambda) is a hyperparameter that controls the interpolation between local and global models. When λ is set to 0, the objective here is reduced to training local models; as λ grows large, it recovers global model optimization. Fk(Wk) is the local loss for the devices.
 
-4. Adversarial Mitigations
+![hyperp](images/hyperp.png)
 
-5. Contribution Calculation
+![op1](images/op1.png)
+![op2](images/op2.png)
+![op3](images/op3.png)
 
-6. Reward Calculation
+## UML Diagram
+![uml1](images/uml1.png)
+![uml2](images/uml2.png)
 
-7. Federated Explanability
-
-
-
-
-## Contributing
-
-
-## Authors and acknowledgment
+## Learnings 
+![learnings](images/learnings.png)
