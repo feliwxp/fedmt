@@ -15,6 +15,8 @@ docker-compose \
 
 ## Fedmt 
 
+Paper: https://ai.facebook.com/research/publications/federated-multi-task-learning-for-competing-constraints/
+
 ![objective](images/objective.png)
 
 Federated multitask learning is to solve different similar tasks at the same time in a federated setting, where each device has its own task/objective. This algorithm aims to optimise multiple objectives at the same time by exploiting the similarities and differences across different tasks. For example, for 2 models with the same input of a image of a flower, 1 model identifies the flower type and another identifies the flower color. 
